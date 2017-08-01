@@ -80,15 +80,39 @@ app.post('/links',
 app.post('/signup', (req, res, next) => {
   var username = req.body.username;
   var password = req.body.password;
+
   return models.Users.create({username, password})
     .then(user => {
       throw user;
     })
     .error(error => {
+      res.location('/signup');
       res.status(500).send(error);
     })
-    .catch(link => {
-      res.status(200).send(link);
+    .catch(user => {
+      res.location('/');
+      res.status(200).send(user);
+    });
+});
+
+app.post('/login', (req, res, next) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  var options = {
+    username: username
+  };
+  return models.Users.get(options)
+    .then(user => {
+      if (models.Users.compare(password, user.password, user.salt)) {
+        res.location('/');
+        res.status(200).send(user);
+      } else {
+        throw user;
+      }
+    })
+    .catch(user => {
+      res.location('/login');
+      res.status(500).send();
     });
 });
 
