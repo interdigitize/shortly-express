@@ -7,10 +7,14 @@ module.exports.createSession = (req, res, next) => {
     models.Sessions.create()
     .then((session) => { 
       var hashId = session.insertId;
-      let query = {id : hashId};
+      let query = {id: hashId};
       models.Sessions.get(query)
       .then((searchReturn) => {
         req.session = {hash: searchReturn.hash};
+        //Below code has to be called 'value'
+        res.cookies = {'shortlyid': {'value': searchReturn.hash} };
+        console.log(res.cookies);
+        next();
       });
     })
     .catch((error) => {
