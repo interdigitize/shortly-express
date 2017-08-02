@@ -23,6 +23,7 @@ class Sessions extends Model {
     return !!session.user;
   }
 
+
   /**
    * Gets one record in the table matching specified conditions, and attaches user
    * information if the userId is present on the session object.
